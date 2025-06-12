@@ -2,9 +2,6 @@
 
 IezyPay is a Flask-based digital payment application created as a student project. It demonstrates concepts of secure money transfers between users with features like PIN verification, QR code payments, and real-time transaction updates.
 
-## Repository
-
-GitHub: [https://github.com/izhan0102/IezyPay.git](https://github.com/izhan0102/IezyPay.git)
 
 ## Overview
 
