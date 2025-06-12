@@ -1,0 +1,298 @@
+/**
+ * IezyPay - Main Stylesheet
+ * Professional styling for the IezyPay digital payment platform
+ */
+
+:root {
+    --primary-color: #1a237e;
+    --primary-light: #534bae;
+    --primary-dark: #000051;
+    --accent-color: #ff6f00;
+    --accent-light: #ffa040;
+    --accent-dark: #c43e00;
+    --text-on-primary: #ffffff;
+    --text-on-accent: #000000;
+    --success-color: #2e7d32;
+    --danger-color: #c62828;
+    --warning-color: #f9a825;
+    --info-color: #1565c0;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+}
+
+body {
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--gray-800);
+    background-color: var(--gray-100);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-on-primary) !important;
+}
+
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: var(--text-on-primary) !important;
+}
+
+.navbar-nav .nav-link.active {
+    color: var(--text-on-primary) !important;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+    color: var(--text-on-primary);
+    border-bottom: none;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    padding: 1rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-on-accent);
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: var(--text-on-accent);
+}
+
+.btn {
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+}
+
+/* Form Styling */
+.form-control {
+    border-radius: 0.25rem;
+    border: 1px solid var(--gray-300);
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.2rem rgba(26, 35, 126, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+}
+
+/* Dashboard Styling */
+.balance-card {
+    background-color: var(--primary-color);
+    color: var(--text-on-primary);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.balance-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.balance-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.transaction-item {
+    transition: background-color 0.2s ease-in-out;
+}
+
+.transaction-item:hover {
+    background-color: var(--gray-100);
+}
+
+/* Animation for refresh icon */
+.fa-spin {
+    animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* PIN Input Styling */
+.pin-input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.pin-input {
+    font-size: 1.5rem;
+    letter-spacing: 0.5rem;
+    text-align: center;
+    width: 12rem;
+    padding: 0.75rem 1rem;
+}
+
+/* Footer Styling */
+.footer {
+    background-color: var(--gray-800);
+    color: var(--gray-300);
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.footer a {
+    color: var(--gray-300);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.footer a:hover {
+    color: var(--text-on-primary);
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-accent {
+    color: var(--accent-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-accent {
+    background-color: var(--accent-color) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    .balance-amount {
+        font-size: 2rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .main-content {
+        padding: 1rem 0;
+    }
+}
+
+/* QR Code Styling */
+.qr-container {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 0.25rem;
+    border: none;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(46, 125, 50, 0.1);
+    color: var(--success-color);
+}
+
+.alert-danger {
+    background-color: rgba(198, 40, 40, 0.1);
+    color: var(--danger-color);
+}
+
+.alert-warning {
+    background-color: rgba(249, 168, 37, 0.1);
+    color: var(--warning-color);
+}
+
+.alert-info {
+    background-color: rgba(21, 101, 192, 0.1);
+    color: var(--info-color);
+} 

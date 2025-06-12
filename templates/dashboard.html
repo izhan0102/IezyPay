@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-12">
+        <h2 class="fw-bold mb-3">Welcome, {{ current_user.name }}!</h2>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-6 mb-3 mb-lg-0">
+        <div class="card balance-card shadow-lg">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0">Your Balance</h5>
+                    <i class="fas fa-wallet fa-2x"></i>
+                </div>
+                <h2 class="display-4 fw-bold" id="userBalance">₹{{ current_user.balance|round(2) }}</h2>
+                <p class="text-light mb-0">Available Balance</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0">Quick Actions</h5>
+                    <i class="fas fa-bolt fa-2x"></i>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="{{ url_for('send_money') }}" class="btn btn-primary w-100 quick-action-btn">
+                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-paper-plane mb-1"></i>
+                                <span>Send Money</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ url_for('receive_money') }}" class="btn btn-primary w-100 quick-action-btn">
+                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-qrcode mb-1"></i>
+                                <span>Receive Money</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <a href="{{ url_for('transactions') }}" class="btn btn-outline-primary w-100 quick-action-btn">
+                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                <i class="fas fa-history mb-1"></i>
+                                <span>Transaction History</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="transactionAlert" class="alert alert-success mb-3 d-none">
+    <i class="fas fa-check-circle me-2"></i> <span id="transactionMessage"></span>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-lg">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Recent Transactions</h5>
+                    <button id="refreshTransactions" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-sync-alt me-1"></i> Refresh
+                    </button>
+                </div>
+                
+                <div id="transactionsList">
+                {% if transactions %}
+                    <div class="transaction-list">
+                        {% for transaction in transactions %}
+                            <div class="card transaction-card mb-2 {% if transaction.transaction_type == 'credit' %}transaction-credit{% elif transaction.transaction_type == 'debit' %}transaction-debit{% else %}transaction-transfer{% endif %}">
+                                <div class="card-body py-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ transaction.description }}</h6>
+                                            <small class="text-muted">{{ transaction.timestamp.strftime('%d %b %Y, %I:%M %p') }}</small>
+                                            {% if transaction.recipient %}
+                                                <small class="d-block text-muted">
+                                                    {% if transaction.transaction_type == 'credit' %}
+                                                        From: {{ transaction.recipient }}
+                                                    {% elif transaction.transaction_type == 'debit' %}
+                                                        To: {{ transaction.recipient }}
+                                                    {% endif %}
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-end">
+                                            <h6 class="mb-0 {% if transaction.transaction_type == 'credit' %}text-success{% elif transaction.transaction_type == 'debit' %}text-danger{% else %}text-warning{% endif %}">
+                                                {% if transaction.transaction_type == 'credit' %}+{% elif transaction.transaction_type == 'debit' %}-{% endif %}₹{{ transaction.amount|round(2) }}
+                                            </h6>
+                                            <small class="text-muted text-capitalize">{{ transaction.transaction_type }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4" id="noTransactionsMessage">
+                        <i class="fas fa-receipt fa-3x mb-2 text-muted"></i>
+                        <h5>No transactions yet</h5>
+                        <p class="text-muted">Your recent transactions will appear here</p>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quick-action-btn {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        font-weight: 500;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 0.75rem 0;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .quick-action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .quick-action-btn i {
+        font-size: 1.2rem;
+    }
+    
+    .quick-action-btn span {
+        font-size: 0.9rem;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .transaction-card {
+        animation: fadeIn 0.5s ease;
+    }
+    
+    #refreshTransactions {
+        transition: all 0.3s ease;
+    }
+    
+    #refreshTransactions.rotating {
+        animation: rotate 1s linear infinite;
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check for transaction success in URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const transactionSuccess = urlParams.get('transaction_success');
+        const message = urlParams.get('message');
+        
+        if (transactionSuccess === 'true' && message) {
+            showTransactionAlert(decodeURIComponent(message));
+        }
+        
+        // Set up auto-refresh for transactions
+        setInterval(fetchLatestTransactions, 10000); // Refresh every 10 seconds
+        
+        // Manual refresh button
+        const refreshButton = document.getElementById('refreshTransactions');
+        refreshButton.addEventListener('click', function() {
+            this.classList.add('rotating');
+            fetchLatestTransactions().then(() => {
+                setTimeout(() => {
+                    this.classList.remove('rotating');
+                }, 1000);
+            });
+        });
+    });
+    
+    function showTransactionAlert(message) {
+        const transactionAlert = document.getElementById('transactionAlert');
+        const transactionMessage = document.getElementById('transactionMessage');
+        
+        transactionMessage.textContent = message;
+        transactionAlert.classList.remove('d-none');
+        
+        // Auto-hide after 5 seconds
+        setTimeout(function() {
+            transactionAlert.classList.add('d-none');
+        }, 5000);
+    }
+    
+    function updateBalance(newBalance) {
+        const balanceElement = document.getElementById('userBalance');
+        
+        // Animate balance change
+        const currentBalance = parseFloat(balanceElement.textContent.replace('₹', ''));
+        animateBalanceChange(currentBalance, newBalance);
+    }
+    
+    function animateBalanceChange(start, end) {
+        const balanceElement = document.getElementById('userBalance');
+        const duration = 1000; // 1 second animation
+        const startTime = performance.now();
+        
+        function updateBalanceAnimation(currentTime) {
+            const elapsedTime = currentTime - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+            
+            const currentValue = start + (end - start) * progress;
+            balanceElement.textContent = '₹' + currentValue.toFixed(2);
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateBalanceAnimation);
+            }
+        }
+        
+        requestAnimationFrame(updateBalanceAnimation);
+    }
+    
+    // Function to fetch and update transactions in real-time
+    function fetchLatestTransactions() {
+        return fetch('{{ url_for("get_latest_transactions") }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateTransactionsList(data.transactions);
+                    updateBalance(data.balance);
+                }
+            })
+            .catch(error => console.error('Error fetching transactions:', error));
+    }
+    
+    function updateTransactionsList(transactions) {
+        const transactionsList = document.getElementById('transactionsList');
+        const noTransactionsMessage = document.getElementById('noTransactionsMessage');
+        
+        if (transactions.length === 0) {
+            if (!noTransactionsMessage) {
+                transactionsList.innerHTML = `
+                    <div class="text-center py-4" id="noTransactionsMessage">
+                        <i class="fas fa-receipt fa-3x mb-2 text-muted"></i>
+                        <h5>No transactions yet</h5>
+                        <p class="text-muted">Your recent transactions will appear here</p>
+                    </div>
+                `;
+            }
+            return;
+        }
+        
+        // Remove no transactions message if it exists
+        if (noTransactionsMessage) {
+            noTransactionsMessage.remove();
+        }
+        
+        let transactionsHTML = '<div class="transaction-list">';
+        
+        transactions.forEach(transaction => {
+            let transactionTypeClass = '';
+            let amountPrefix = '';
+            let personInfo = '';
+            
+            if (transaction.transaction_type === 'credit') {
+                transactionTypeClass = 'transaction-credit';
+                amountPrefix = '+';
+                if (transaction.recipient) {
+                    personInfo = `<small class="d-block text-muted">From: ${transaction.recipient}</small>`;
+                }
+            } else if (transaction.transaction_type === 'debit') {
+                transactionTypeClass = 'transaction-debit';
+                amountPrefix = '-';
+                if (transaction.recipient) {
+                    personInfo = `<small class="d-block text-muted">To: ${transaction.recipient}</small>`;
+                }
+            } else {
+                transactionTypeClass = 'transaction-transfer';
+            }
+            
+            transactionsHTML += `
+                <div class="card transaction-card mb-2 ${transactionTypeClass}">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">${transaction.description}</h6>
+                                <small class="text-muted">${transaction.timestamp}</small>
+                                ${personInfo}
+                            </div>
+                            <div class="text-end">
+                                <h6 class="mb-0 ${transaction.transaction_type === 'credit' ? 'text-success' : transaction.transaction_type === 'debit' ? 'text-danger' : 'text-warning'}">
+                                    ${amountPrefix}₹${transaction.amount.toFixed(2)}
+                                </h6>
+                                <small class="text-muted text-capitalize">${transaction.transaction_type}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        transactionsHTML += '</div>';
+        
+        // Only update if the content has changed
+        const currentTransactions = transactionsList.innerHTML.trim();
+        if (currentTransactions !== transactionsHTML.trim()) {
+            transactionsList.innerHTML = transactionsHTML;
+        }
+    }
+</script>
+{% endblock %} 
