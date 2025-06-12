@@ -1,8 +1,14 @@
-# IezyPay - Secure Digital Payment Platform
+# IezyPay - Digital Payment Project
+
+IezyPay is a Flask-based digital payment application created as a student project. It demonstrates concepts of secure money transfers between users with features like PIN verification, QR code payments, and real-time transaction updates.
+
+## Repository
+
+GitHub: [https://github.com/izhan0102/IezyPay.git](https://github.com/izhan0102/IezyPay.git)
 
 ## Overview
 
-IezyPay is a robust, secure digital payment platform designed for seamless money transfers and transaction management. Built with Flask and SQLAlchemy, it provides a comprehensive solution for digital payments with a focus on security, performance, and user experience.
+IezyPay is a robust digital payment platform designed for seamless money transfers and transaction management. Built with Flask and SQLAlchemy, it demonstrates implementation of secure authentication, real-time updates, and modern UI design.
 
 ## Features
 
@@ -26,7 +32,7 @@ IezyPay is a robust, secure digital payment platform designed for seamless money
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/iezypay.git
+git clone https://github.com/izhan0102/iezypay.git
 cd iezypay
 ```
 
@@ -78,23 +84,12 @@ iezypay/
 └── README.md              # Project documentation
 ```
 
-## Future Enhancements
 
-- Mobile application integration
-- International transfers
-- Cryptocurrency support
-- Advanced analytics dashboard
-- Merchant payment processing
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contributors
-
-- Lead Developer: [Your Name]
-- UI/UX Design: [Designer Name]
-- Security Consultant: [Security Expert]
 
 ---
 

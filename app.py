@@ -70,51 +70,46 @@ def index():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    """User registration route"""
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
         phone = request.form.get('phone')
         password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
-        pin = request.form.get('pin')
-        confirm_pin = request.form.get('confirm_pin')
+        pin = request.form.get('pin', '')  # Default to empty string if None
         
-        if password != confirm_password:
-            flash('Passwords do not match', 'danger')
-            return redirect(url_for('signup'))
-        
-        if pin != confirm_pin:
-            flash('PINs do not match', 'danger')
-            return redirect(url_for('signup'))
-        
-        if len(pin) != 4 or not pin.isdigit():
+        # Validate PIN if provided
+        if pin and (len(pin) != 4 or not pin.isdigit()):
             flash('PIN must be a 4-digit number', 'danger')
-            return redirect(url_for('signup'))
+            return render_template('signup.html')
         
-        user_exists = User.query.filter_by(email=email).first() or User.query.filter_by(phone=phone).first()
-        if user_exists:
-            flash('Email or phone number already exists', 'danger')
-            return redirect(url_for('signup'))
+        # Check if user already exists
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered', 'danger')
+            return render_template('signup.html')
         
-        hashed_password = generate_password_hash(password, method='sha256')
-        hashed_pin = generate_password_hash(pin, method='sha256')
-        new_user = User(name=name, email=email, phone=phone, password_hash=hashed_password, pin_hash=hashed_pin)
+        existing_phone = User.query.filter_by(phone=phone).first()
+        if existing_phone:
+            flash('Phone number already registered', 'danger')
+            return render_template('signup.html')
         
-        db.session.add(new_user)
-        db.session.commit()  # Commit first to get the user ID
-        
-        # Add initial transaction for welcome bonus
-        welcome_transaction = Transaction(
-            user_id=new_user.id,
-            amount=2000.0,
-            transaction_type='credit',
-            description='Welcome bonus credited to your IezyPay account'
+        # Create new user
+        user = User(
+            name=name,
+            email=email,
+            phone=phone,
+            password_hash=generate_password_hash(password),
+            pin_hash=generate_password_hash(pin) if pin else None,
+            balance=1000.0  # Starting balance
         )
-        db.session.add(welcome_transaction)
+        
+        db.session.add(user)
         db.session.commit()
         
-        flash('Account created successfully! 2000 rupees have been credited to your IezyPay account', 'success')
+        flash('Account created successfully! Please log in.', 'success')
         return redirect(url_for('login'))
     
     return render_template('signup.html')
